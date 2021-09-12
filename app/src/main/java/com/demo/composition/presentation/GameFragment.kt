@@ -12,18 +12,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.demo.composition.R
 import com.demo.composition.databinding.FragmentGameBinding
 import com.demo.composition.domain.entity.GameResult
-import com.demo.composition.domain.entity.GameSettings
 import com.demo.composition.domain.entity.Level
 import java.lang.RuntimeException
 
 class GameFragment : Fragment() {
 
     private lateinit var level: Level
+    private val viewModelFactory by lazy {
+        GameViewModelFactory(requireActivity().application, level)
+    }
+
     private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
-        )[GameViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[GameViewModel::class.java]
     }
 
     private val tvOptions by lazy {
@@ -59,7 +59,6 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         setClickListenersToOptions()
-        viewModel.startGame(level)
     }
 
     private fun setClickListenersToOptions() {
